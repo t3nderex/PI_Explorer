@@ -2,7 +2,13 @@ from pathlib import Path
 from sys import argv
 
 from explorer_lib import pi_explorer
+
+from explorer_lib import pi_regexp
+
+
 from utils import util
+
+
 
 if __name__ == '__main__':
 
@@ -25,6 +31,14 @@ if __name__ == '__main__':
     # 매개변수가 2개인 경우
     elif len(argv) == 3:
         if argv[1] == '-r' or '-range':
+
+            regexp = pi_regexp.PI_RegExp()
+            regexp_li = regexp.get_regexps()
+
+            print(regexp_li)
+
+
+    
             if argv[2] == 'all':
                 print('전체 경로 탐색을 시작합니다.')
                 # 탐색 함수 추가
@@ -39,6 +53,7 @@ if __name__ == '__main__':
                     print(f'{file_path}에서 개인정보 탐색을 시작합니다.')
 
                     file_type = util.get_ft(file_path)
+                    print(file_type)
                     searched_pi = pi_explorer.find_pi(file_path, file_type) 
                     
                 
@@ -49,7 +64,7 @@ if __name__ == '__main__':
                     dir_list = util.search_dir(dir_path)  # 디렉터리 탐색
                         
                 
-                exit()    
+                exit()   
         else:
             print('[Exit] wrong arguments2')
             exit()
