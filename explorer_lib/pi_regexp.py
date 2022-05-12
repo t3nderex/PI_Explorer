@@ -35,13 +35,13 @@ class PI_RegExp():
         self.business_registration_num = '^(\d{3,3})+[-]+(\d{2,2})+[-]+(\d{5,5})'            # 사업자등록번호
 
 
-    def get_regexps(self):
+    def get_pi_regexps(self):
         reg_exp_list = [self.resident_registration_num,self.passport_num,self.alien_registration_num,self.driver_license_num,self.ko_name,
         self.en_name,self.addr,self.phone_num,self.bank_account_num,self.health_insurance_num,self.credit_card_num, self.car_num1, self.car_num2,
         self.url,  self.mail, self.ipv4, self.ipv6, self.mac, self.id, self.military_serial_num, self.business_registration_num] 
         return reg_exp_list
 
-    def get_regexp(self, rtype):
+    def get_pi_regexp(self, rtype):
         pass
 
 
