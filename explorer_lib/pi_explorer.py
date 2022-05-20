@@ -3,9 +3,15 @@
         * 이미지가 존재한다면 OCR로 이미지 추출하기
 """
 
+from dataclasses import replace
+from pprint import pprint
+from unicodedata import category
 import olefile 
 import re
-from docx import Document
+
+from docx import document       # 워드
+import openpyxl as oxl          # 엑셀
+import pdfplumber                # pdf
 
 
 class PI_Explorer():
@@ -101,11 +107,43 @@ class PI_Explorer():
         
 
     def __find_pi_pdf(self, file_name):
-        pass
-
+        
+        pdf = pdfplumber.open(file_name)
+        pages = pdf.pages
+        data =[]
+        
+           
+        for page in pages:
+            data.append((lambda page: page.extract_text())(page))
+        
+         
+        # for page in range(pdf.numPages):
+        #     text = pdf.getPage(page).extractText()
+        #     texts +=text
+        return data
 
     def __find_pi_excel(self, file_name):
-        pass
+        """_summary_
+
+        Args:
+            file_name (_type_): _description_
+
+        Returns:
+            _type_: _description_
+            
+        TODO:
+            * 엑셀 시트 순회 구현 
+
+        """
+        wb = oxl.load_workbook(file_name, data_only=True)
+        ws = wb.active
+
+        all_values = [[cell.value for cell in row]for row in ws.rows]   
+        all_values = sum(all_values, [])                                # 1차원 리스트로 변환
+        
+        # print(all_values)
+        return True
+
 
 
     def __find_pi_ppt(self, file_name):
@@ -118,8 +156,8 @@ class PI_Explorer():
 
 
 if __name__ == '__main__':
-    file_name = './test/test.hwp'
-    file_type ='Hangule'
+    file_name = './test/test.pdf'
+    file_type ='pdf'
     regexp_li = ''
 
     
