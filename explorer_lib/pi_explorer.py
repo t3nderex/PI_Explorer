@@ -8,19 +8,26 @@ from docx import Document       # 워드
 import openpyxl as oxl          # 엑셀
 import pdfplumber               # pdf
 
+from pi_regexp import PI_RegExp
 
 class PI_Explorer():
     def __init__(self):
         pass
     
 
-    def find_pi(self, file_path, regexp):
-        """정규식 탐색
+    def find_pi(self, data, regexp_li):           
+        
+        
+        
 
-        Args:
-            regexp (_type_): _description_
-        """
-        pass
+        leaked_data = []
+        for regexp in regexp_li:
+            p = re.compile(regexp)
+            leaked_data.append(p.findall(data))
+            
+        print(":",leaked_data)
+            # leaked_data.append(re.findall(data, regexp))
+        return leaked_data
 
     def read_data(self, file_name):
         try:
@@ -82,7 +89,8 @@ class PI_Explorer():
         decoded_data = encoded_data.decode('utf-16')
 
         # img = file.openstream('PrvImage').read()
-        return decoded_data 
+        data = ''.join(map(str, decoded_data))
+        return data
 
 
     def __read_msword(self, file_name):
@@ -107,6 +115,8 @@ class PI_Explorer():
         data.append(text_data for txt_data in text_data)
         data.append(tb_data for tb_data in table_data)
 
+        data = ''.join(map(str, data))
+
         return data
         
 
@@ -119,6 +129,7 @@ class PI_Explorer():
         for page in pages:
             data.append((lambda page: page.extract_text())(page))
 
+        data = ''.join(map(str, data))
         return data
 
     def __read_excel(self, file_name):
@@ -140,6 +151,7 @@ class PI_Explorer():
         all_values = [[cell.value for cell in row]for row in ws.rows]   
         data = sum(all_values, [])                                # 1차원 리스트로 변환
         
+        data = ''.join(map(str, data))
         # print(all_values)
         return data
 
@@ -156,6 +168,7 @@ class PI_Explorer():
                 for paragraph in shape.text_frame.paragraphs:
                     data.append(paragraph.text)
         
+        data = ''.join(map(str, data))
         return data
 
 
@@ -165,12 +178,15 @@ class PI_Explorer():
 
 
 if __name__ == '__main__':
-    file_name = './test/test.xlsx'
+    file_name = './test/test.hwp'
     
-    regexp_li = ''
+    regexp_li = ['None']
 
-
+    pr = PI_RegExp()
     px = PI_Explorer()
-
+    
+    regexp_li = pr.get_pi_regexps()
     data = px.read_data(file_name)
-    print(f"읽은 데이터 {data}")
+    
+    leaked_data = px.find_pi(data, regexp_li)
+    print(f"읽은 데이터 {type(data)}")
