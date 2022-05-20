@@ -1,6 +1,7 @@
 import re
 
 
+import magic
 import olefile                  # 한글
 from pptx import Presentation   # ppt 
 from docx import Document       # 워드
@@ -11,34 +12,45 @@ import pdfplumber               # pdf
 class PI_Explorer():
     def __init__(self):
         pass
+    
+
+    def find_pi(self, file_path, regexp):
+        """정규식 탐색
+
+        Args:
+            regexp (_type_): _description_
+        """
+        pass
+
+    def read_data(self, file_name):
+        try:
+            file_type = magic.from_file(file_name)   # 매직 넘버를 기반으로 파일 타입 확인
+        except:
+            print("파일의 시그니쳐를 얻어오지 못했습니다.")
+            file = {file_name:file_type}
+            return False
         
+        if file_type is None:
+            return False
 
-    def find_pi(self, file_name, file_type, regexp_li):
         if 'Hangul' in file_type: 
-            result = self.__find_pi_hwp(file_name)
-            
+            result = self.__read_hwp(file_name)
             return result
 
-        elif 'doc' in file_type:
-            result = self.__find_pi_msword(file_name)
-            
-            
+        elif 'Word' in file_type:
+            result = self.__read_msword(file_name)
             return result
 
-        elif 'pdf' in file_type:
-            
-            result = self.__find_pi_pdf(file_name)
-            
-            
+        elif 'PDF' in file_type:
+            result = self.__read_pdf(file_name)
             return result
 
-        elif 'excel' in file_type or 'csv' in file_type:
-            result = self.__find_pi_excel(file_name)
-                        
+        elif 'excel' in file_type or 'csv' in file_type or 'Zip archive data' in file_type:
+            result = self.__read_excel(file_name)
             return result
 
-        elif 'ppt' in file_type:
-            result = self.__find_pi_ppt(file_name)
+        elif 'PowerPoint' in file_type:
+            result = self.__read_ppt(file_name)
             return result
 
         elif 'txt' in file_type:
@@ -51,29 +63,6 @@ class PI_Explorer():
         
 
     def __read_hwp(self, file_name):
-        pass
-
-
-    def __read_word(self, file_name):
-        pass
-
-
-    def __read_pdf(self, file_name):
-        pass
-
-
-    def __read_excel(self, file_name):
-        pass
-
-    #보류
-    def __read_ppt(self, file_name):
-        pass
-
-
-    def __read_txt(self, file_name):
-        pass
-
-    def __find_pi_hwp(self, file_name):
         """ 한글 문서 내 문자열 추출
 
         Args:
@@ -96,7 +85,7 @@ class PI_Explorer():
         return decoded_data 
 
 
-    def __find_pi_msword(self, file_name):
+    def __read_msword(self, file_name):
         """ doc, docx 파일 내 문자열 추출
         
         Args:
@@ -121,7 +110,7 @@ class PI_Explorer():
         return data
         
 
-    def __find_pi_pdf(self, file_name):
+    def __read_pdf(self, file_name):
         
         pdf = pdfplumber.open(file_name)
         pages = pdf.pages
@@ -132,7 +121,7 @@ class PI_Explorer():
 
         return data
 
-    def __find_pi_excel(self, file_name):
+    def __read_excel(self, file_name):
         """_summary_
 
         Args:
@@ -155,7 +144,7 @@ class PI_Explorer():
         return data
 
     
-    def __find_pi_ppt(self, file_name):
+    def __read_ppt(self, file_name):
         data = []
         prs = Presentation(file_name)
 
@@ -170,22 +159,18 @@ class PI_Explorer():
         return data
 
 
-    def __find_pi_txt(self, file_name):
+    def __read_txt(self, file_name):
         pass
 
-    def find_pi(file_obj, regexp):
-        pass
+
 
 if __name__ == '__main__':
-    file_name = './test/test.pptx'
-    file_type ='pptx'
+    file_name = './test/test.xlsx'
+    
     regexp_li = ''
-
-    
-
-    
 
 
     px = PI_Explorer()
-    
-    temp = px.find_pi(file_name, file_type, regexp_li)    
+
+    data = px.read_data(file_name)
+    print(f"읽은 데이터 {data}")
