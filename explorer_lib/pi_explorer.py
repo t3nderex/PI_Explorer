@@ -1,17 +1,11 @@
-"""
-    TODO: 
-        * 이미지가 존재한다면 OCR로 이미지 추출하기
-"""
-
-from dataclasses import replace
-from pprint import pprint
-from unicodedata import category
-import olefile 
 import re
 
-from docx import document       # 워드
+
+import olefile                  # 한글
+from pptx import Presentation   # ppt 
+from docx import Document       # 워드
 import openpyxl as oxl          # 엑셀
-import pdfplumber                # pdf
+import pdfplumber               # pdf
 
 
 class PI_Explorer():
@@ -32,6 +26,7 @@ class PI_Explorer():
             return result
 
         elif 'pdf' in file_type:
+            
             result = self.__find_pi_pdf(file_name)
             
             
@@ -54,6 +49,29 @@ class PI_Explorer():
             print(f'{file_type}은 지원되지 않는 문서 형식 입니다.')
             return False
         
+
+    def __read_hwp(self, file_name):
+        pass
+
+
+    def __read_word(self, file_name):
+        pass
+
+
+    def __read_pdf(self, file_name):
+        pass
+
+
+    def __read_excel(self, file_name):
+        pass
+
+    #보류
+    def __read_ppt(self, file_name):
+        pass
+
+
+    def __read_txt(self, file_name):
+        pass
 
     def __find_pi_hwp(self, file_name):
         """ 한글 문서 내 문자열 추출
@@ -97,11 +115,8 @@ class PI_Explorer():
         tables = doc.tables
         tables_data = []
         table_data = [cell.text for table in tables for row in table.rows for cell in row.cells]
-        
-        for txt_data in text_data:
-            data.append(txt_data)
-        for tb_data in table_data:
-            data.append(tb_data)
+        data.append(text_data for txt_data in text_data)
+        data.append(tb_data for tb_data in table_data)
 
         return data
         
@@ -111,15 +126,10 @@ class PI_Explorer():
         pdf = pdfplumber.open(file_name)
         pages = pdf.pages
         data =[]
-        
-           
+
         for page in pages:
             data.append((lambda page: page.extract_text())(page))
-        
-         
-        # for page in range(pdf.numPages):
-        #     text = pdf.getPage(page).extractText()
-        #     texts +=text
+
         return data
 
     def __find_pi_excel(self, file_name):
@@ -139,25 +149,36 @@ class PI_Explorer():
         ws = wb.active
 
         all_values = [[cell.value for cell in row]for row in ws.rows]   
-        all_values = sum(all_values, [])                                # 1차원 리스트로 변환
+        data = sum(all_values, [])                                # 1차원 리스트로 변환
         
         # print(all_values)
-        return True
+        return data
 
-
-
+    
     def __find_pi_ppt(self, file_name):
+        data = []
+        prs = Presentation(file_name)
 
-        pass
+
+        for slide in prs.slides:
+            for shape in slide.shapes:
+                if not shape.has_text_frame:
+                    continue
+                for paragraph in shape.text_frame.paragraphs:
+                    data.append(paragraph.text)
+        
+        return data
+
 
     def __find_pi_txt(self, file_name):
         pass
 
-
+    def find_pi(file_obj, regexp):
+        pass
 
 if __name__ == '__main__':
-    file_name = './test/test.pdf'
-    file_type ='pdf'
+    file_name = './test/test.pptx'
+    file_type ='pptx'
     regexp_li = ''
 
     
@@ -167,11 +188,4 @@ if __name__ == '__main__':
 
     px = PI_Explorer()
     
-    temp = px.find_pi(file_name, file_type, regexp_li)
-
-    print(temp)
-
-
-    
-
-    
+    temp = px.find_pi(file_name, file_type, regexp_li)    
