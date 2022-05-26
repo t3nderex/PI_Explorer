@@ -1,9 +1,9 @@
 from pathlib import Path
 from sys import argv
 
-from explorer_lib import pi_explorer
+from explorer_lib.pi_explorer import PI_Explorer
+from explorer_lib.pi_regexp import PI_RegExp
 
-from explorer_lib import pi_regexp
 
 
 from utils import util
@@ -32,10 +32,9 @@ if __name__ == '__main__':
     elif len(argv) == 3:
         if argv[1] == '-r' or '-range':
 
-            regexp = pi_regexp.PI_RegExp()
-            regexp_li = regexp.get_regexps()
+            regexp = PI_RegExp()
+            regexp_li = regexp.get_pi_regexps()
 
-            print(regexp_li)
 
 
     
@@ -51,10 +50,19 @@ if __name__ == '__main__':
                 elif path.is_file():             # 파일인 경우
                     file_path = str(path)
                     print(f'{file_path}에서 개인정보 탐색을 시작합니다.')
+                    file_name = './test/test.hwp'
 
-                    file_type = util.get_ft(file_path)
-                    print(file_type)
-                    searched_pi = pi_explorer.find_pi(file_path, file_type) 
+                    pr = PI_RegExp()
+                    px = PI_Explorer()
+
+                    regexp_li = pr.get_pi_regexps()
+                    data = px.read_data(file_name)
+
+                    leaked_data = px.find_pi(data, regexp_li)
+                    # print(f"읽은 데이터 {type(leaked_data)}")
+                    
+                    
+                     
                     
                 
                 elif path.is_dir():              # 디렉터리인 경우
