@@ -12,9 +12,8 @@ class PI_RegExp():
         self.ko_name = '^[가-힣]{2,4}$'
         self.en_name = '^[a-zA-Z]{2,10}\s[a-zA-Z]{2,10}$'
 
-        self.addr = {"road_name_addr":'(([가-힣A-Za-z·\d~\-\.]{2,}(로|길).[\d]+)|([가-힣A-Za-z·\d~\-\.]+(읍|동)\s)[\d]+)',
-        'land_num_addr':'(([가-힣A-Za-z·\d~\-\.]+(읍|면|동)\s)[\d-]+)|(([가-힣A-Za-z·\d~\-\.]+(읍|면|동)\s)[\d][^시]+)'}
-
+        self.road_name_addr = '(([가-힣A-Za-z·\d~\-\.]{2,}(로|길).[\d]+)|([가-힣A-Za-z·\d~\-\.]+(읍|동)\s)[\d]+)'
+        self.land_num_addr = '(([가-힣A-Za-z·\d~\-\.]+(읍|면|동)\s)[\d-]+)|(([가-힣A-Za-z·\d~\-\.]+(읍|면|동)\s)[\d][^시]+)'
         # 지번부터 다시 짜면 됌
 
         self.phone_num = '(\d{2,3}[ ,-]-?\d{2,4}[ ,-]-?\d{4})'                                       # 전화번호
@@ -37,7 +36,7 @@ class PI_RegExp():
 
     def get_pi_regexps(self):
         reg_exp_list = [self.resident_registration_num,self.passport_num,self.alien_registration_num,self.driver_license_num,self.ko_name,
-        self.en_name,self.addr,self.phone_num,self.bank_account_num,self.health_insurance_num,self.credit_card_num, self.car_num1, self.car_num2,
+        self.en_name, self.road_name_addr, self.land_num_addr,self.phone_num,self.bank_account_num,self.health_insurance_num,self.credit_card_num, self.car_num1, self.car_num2,
         self.url,  self.mail, self.ipv4, self.ipv6, self.mac, self.id, self.military_serial_num, self.business_registration_num] 
         return reg_exp_list
 
